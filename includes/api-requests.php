@@ -27,6 +27,16 @@ function viewPadraoPost(){
         'conteudo' => get_the_content(null, true)
     );
 }
+function ConstruiRetorno($dados, $paginaAtual, &$query, $qtdpPagina = 10){
+    $total = (int) $query->found_posts;
+    return array(
+        "dados" => $dados,
+        "paginaAtual" => $paginaAtual,
+        "total" => $total,
+        "quantidadePorPagina" => $qtdpPagina,
+        "quantidadeDePaginas" => (int) (($total / $qtdpPagina) +  (($total % $qtdpPagina) == 0 ? 0:1))
+    );
+}
 
 function GetAllAcontece($params){
     $retorno = Array();
@@ -56,7 +66,7 @@ function GetAllAcontece($params){
             );
 		}
     }
-    $response = new WP_REST_Response($retorno);
+    $response = new WP_REST_Response(ConstruiRetorno($retorno, $paginaAtual, $query));
 	$response->set_status(201);
     return $response;
 }
