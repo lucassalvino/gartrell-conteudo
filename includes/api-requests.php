@@ -18,6 +18,10 @@ function CriaRota($nome, $callback, $id = false, $method = 'GET'){
 function definicao_api(){
     CriaRota('acontece', 'GetAllAcontece');
     CriaRota('acontece', 'GetAcontece', true);
+    CriaRota('noticia', 'GetAllNoticia');
+    CriaRota('noticia', 'GetNoticia', true);
+    CriaRota('reflexao', 'GetAllReflexao');
+    CriaRota('reflexao', 'GetReflexao', true);
 }
 
 function viewPadraoPost(){
@@ -43,7 +47,7 @@ function ConstruiRetorno($dados, $paginaAtual, &$query, $qtdpPagina = 10){
     );
 }
 
-function GetAllArgumentosFiltro($tipopost, $paginaAtual,$quantidadePorPagina){
+function GetAllArgumentosFiltro($tipopost, $paginaAtual,$quantidadePorPagina, $id_excluir = Array()){
     return array(
 		'post_type' => $tipopost,
         'post_status'=>'publish',
@@ -51,6 +55,7 @@ function GetAllArgumentosFiltro($tipopost, $paginaAtual,$quantidadePorPagina){
         'offset'=> (($quantidadePorPagina*$paginaAtual) - $quantidadePorPagina),
 		'order' => 'DESC',
         "posts_per_page" => $quantidadePorPagina,
+        'post__not_in' => $id_excluir
 	);
 }
 
@@ -82,24 +87,17 @@ function ObtemViewPost(&$query, $funcaoCustom){
     return $retorno;
 }
 
-function CustomizaAcontece(){
-    return array(
-        'palestrantes' => get_field('palestrantes')
-    );
-}
-
-function GetPostUnico($params, $funcaoCustomizacao){
+function GetPostUnico($params, $posttype, $funcaoCustomizacao){
     $args = array(
         'p' => $params->get_param('id'),
         'post_type' => 'any'
     );
     $query = new WP_Query($args);
     $retorno = ObtemViewPost($query, $funcaoCustomizacao);
-    if(is_array($retorno) && count($retorno) > 0){
-        $retorno = $retorno[0];
-    }else{
-        $retorno = Array();
-    }
+    $retorno = (is_array($retorno) && count($retorno) > 0)?$retorno[0]:Array();
+    $queryRelacionados = new WP_Query(GetAllArgumentosFiltro($posttype, 1, 4, array_key_exists('id', $retorno)?Array($retorno['id']):Array()));
+    $relacionados = ObtemViewPost($queryRelacionados, 'SemCustomizacao');
+    $retorno['relacionados'] = $relacionados;
     return ObtemRetornoPadraoSucesso($retorno);
 }
 function GetAllPosts($params, $posttype, $funcaoCustomizacao){
@@ -112,10 +110,36 @@ function GetAllPosts($params, $posttype, $funcaoCustomizacao){
     return ObtemRetornoPadraoSucesso(ConstruiRetorno($retorno, $paginaAtual, $query, $quantidadePagina));
 }
 
+function CustomizaAcontece(){
+    return array(
+        'palestrantes' => get_field('palestrantes')
+    );
+}
+
+function SemCustomizacao(){
+    return Array();
+}
+
 function GetAcontece($params){
-    return GetPostUnico($params, 'CustomizaAcontece');
+    return GetPostUnico($params, 'post_acontece', 'CustomizaAcontece');
 }
 
 function GetAllAcontece($params){
     return GetAllPosts($params, 'post_acontece', 'CustomizaAcontece');
+}
+
+function GetNoticia($params){
+    return GetPostUnico($params, 'post_noticia', 'SemCustomizacao');
+}
+
+function GetAllNoticia($params){
+    return GetAllPosts($params, 'post_noticia', 'SemCustomizacao');
+}
+
+function GetReflexao($params){
+    return GetPostUnico($params, 'post_reflexoes', 'SemCustomizacao');
+}
+
+function GetAllReflexao($params){
+    return GetAllPosts($params, 'post_reflexoes', 'SemCustomizacao');
 }

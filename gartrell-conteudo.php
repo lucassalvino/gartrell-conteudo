@@ -41,7 +41,7 @@ function register_acontece_post(){
 		'labels' => $labels,
 		'description' => 'Posts Acontece',
 		'public' => true,
-		'menu_position' => 0,
+		'menu_position' => 4,
 		'supports' => array(
 			'editor' , 'title', 'thumbnail', 'excerpt', 'custom-fields', 'author'
         ),
@@ -51,6 +51,46 @@ function register_acontece_post(){
 	register_post_type( 'post_acontece', $args );
 }
 
+add_action( 'init', 'register_noticias_post' );
 
+function register_noticias_post(){
+	$labels = array(
+		'name' => __( 'Notícias', 'Posts Notícias' ),
+		'singular_name' => __( 'Notícia', 'Posts notícia' )
+	);
+	$args = array(
+		'labels' => $labels,
+		'description' => 'Posts notícia',
+		'public' => true,
+		'menu_position' => 5,
+		'supports' => array(
+			'editor' , 'title', 'thumbnail', 'excerpt', 'custom-fields', 'author'
+        ),
+        'taxonomies'=>array('category'),
+        'rewrite'=>true
+	);
+	register_post_type( 'post_noticia', $args );
+}
+
+add_action( 'init', 'register_reflexoes_post' );
+
+function register_reflexoes_post(){
+	$labels = array(
+		'name' => __( 'Reflexões', 'Posts Reflexões' ),
+		'singular_name' => __( 'Reflexão', 'Posts Reflexão' )
+	);
+	$args = array(
+		'labels' => $labels,
+		'description' => 'Posts Reflexões',
+		'public' => true,
+		'menu_position' => 6,
+		'supports' => array(
+			'editor' , 'title', 'thumbnail', 'excerpt', 'custom-fields', 'author'
+        ),
+        'taxonomies'=>array('category'),
+        'rewrite'=>true
+	);
+	register_post_type( 'post_reflexoes', $args );
+}
 
 include APP_PLUGIN_DIR . 'includes/api-requests.php';
