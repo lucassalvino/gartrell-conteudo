@@ -1,10 +1,14 @@
 <?php
 
 add_action( 'rest_api_init', 'definicao_api');
-function CriaRota($nome, $callback, $method = 'GET'){
+function CriaRota($nome, $callback, $id = false, $method = 'GET'){
+    $query = "";
+    if($id){
+        $query = "/(?P<id>\d+)";
+    }
     register_rest_route(
 		'v1',
-		'/'.$nome,
+		'/'.$nome.$query,
 		array(
 			'methods' => $method,
 			'callback' => $callback
@@ -13,6 +17,7 @@ function CriaRota($nome, $callback, $method = 'GET'){
 }
 function definicao_api(){
     CriaRota('acontece', 'GetAllAcontece');
+    CriaRota('acontece', 'GetAcontece', true);
 }
 
 function viewPadraoPost(){
@@ -38,35 +43,67 @@ function ConstruiRetorno($dados, $paginaAtual, &$query, $qtdpPagina = 10){
     );
 }
 
-function GetAllAcontece($params){
-    $retorno = Array();
-    $paginaAtual = $params->get_param( 'pagina' );
-    if(!isset($paginaAtual) || $paginaAtual == ""){
-		$paginaAtual = 1;
-	}else{
-		$paginaAtual = (int)$paginaAtual;
-	}
-    $args = array(
-		'post_type' => 'post_acontece',
+function GetAllArgumentosFiltro($tipopost, $paginaAtual,$quantidadePorPagina){
+    return array(
+		'post_type' => $tipopost,
         'post_status'=>'publish',
         "paged" => 1,
-        'offset'=> ((10*$paginaAtual) - 10),
+        'offset'=> (($quantidadePorPagina*$paginaAtual) - $quantidadePorPagina),
 		'order' => 'DESC',
-        "posts_per_page" => 10,
+        "posts_per_page" => $quantidadePorPagina,
 	);
-    $query = new WP_Query($args);
+}
+
+function GetParametrosPadrao($request, &$paginaAtual, &$qtdPagina){
+    $paginaAtual = $request->get_param( 'pagina' );
+    $qtdPagina = $request->get_param( 'qtdPagina' );
+    $paginaAtual = (!isset($paginaAtual) || $paginaAtual == "")?1:(int)$paginaAtual;
+    $qtdPagina = (!isset($qtdPagina) || $qtdPagina == "")?4:(int)$qtdPagina;
+}
+
+function ObtemRetornoPadraoSucesso($dados){
+    $response = new WP_REST_Response($dados);
+    $response->set_status(200);
+    return $response;
+}
+
+function ObtemViewPost(&$query, $funcaoCustom){
+    $retorno = Array();
     if ($query->have_posts()){
         while($query->have_posts()){
 			$query->the_post();
 			array_push($retorno, array_merge(
                 viewPadraoPost(),
-                array(
-                    'palestrantes' => get_field('palestrantes')
-                ))
+                $funcaoCustom()
+                )
             );
 		}
     }
-    $response = new WP_REST_Response(ConstruiRetorno($retorno, $paginaAtual, $query));
-	$response->set_status(201);
-    return $response;
+    return $retorno;
+}
+
+function CustomizaAcontece(){
+    return array(
+        'palestrantes' => get_field('palestrantes')
+    );
+}
+
+function GetAcontece($params){
+    $args = array(
+        'p' => $params->get_param('id'),
+        'post_type' => 'any'
+    );
+    $query = new WP_Query($args);
+    $retorno = ObtemViewPost($query, 'CustomizaAcontece');
+    return ObtemRetornoPadraoSucesso($retorno);
+}
+
+function GetAllAcontece($params){
+    $paginaAtual = null;
+    $quantidadePagina = null;
+    GetParametrosPadrao($params, $paginaAtual, $quantidadePagina);
+    $args = GetAllArgumentosFiltro('post_acontece', $paginaAtual, $quantidadePagina);
+    $query = new WP_Query($args);
+    $retorno = ObtemViewPost($query, 'CustomizaAcontece');
+    return ObtemRetornoPadraoSucesso(ConstruiRetorno($retorno, $paginaAtual, $query, $quantidadePagina));
 }
