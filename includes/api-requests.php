@@ -88,22 +88,29 @@ function CustomizaAcontece(){
     );
 }
 
-function GetAcontece($params){
+function GetPostUnico($params, $funcaoCustomizacao){
     $args = array(
         'p' => $params->get_param('id'),
         'post_type' => 'any'
     );
     $query = new WP_Query($args);
-    $retorno = ObtemViewPost($query, 'CustomizaAcontece');
+    $retorno = ObtemViewPost($query, $funcaoCustomizacao);
     return ObtemRetornoPadraoSucesso($retorno);
 }
-
-function GetAllAcontece($params){
+function GetAllPosts($params, $posttype, $funcaoCustomizacao){
     $paginaAtual = null;
     $quantidadePagina = null;
     GetParametrosPadrao($params, $paginaAtual, $quantidadePagina);
-    $args = GetAllArgumentosFiltro('post_acontece', $paginaAtual, $quantidadePagina);
+    $args = GetAllArgumentosFiltro($posttype, $paginaAtual, $quantidadePagina);
     $query = new WP_Query($args);
-    $retorno = ObtemViewPost($query, 'CustomizaAcontece');
+    $retorno = ObtemViewPost($query, $funcaoCustomizacao);
     return ObtemRetornoPadraoSucesso(ConstruiRetorno($retorno, $paginaAtual, $query, $quantidadePagina));
+}
+
+function GetAcontece($params){
+    return GetPostUnico($params, 'CustomizaAcontece');
+}
+
+function GetAllAcontece($params){
+    return GetAllPosts($params, 'post_acontece', 'CustomizaAcontece');
 }
