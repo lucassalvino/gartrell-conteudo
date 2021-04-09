@@ -95,6 +95,11 @@ function GetPostUnico($params, $funcaoCustomizacao){
     );
     $query = new WP_Query($args);
     $retorno = ObtemViewPost($query, $funcaoCustomizacao);
+    if(is_array($retorno) && count($retorno) > 0){
+        $retorno = $retorno[0];
+    }else{
+        $retorno = Array();
+    }
     return ObtemRetornoPadraoSucesso($retorno);
 }
 function GetAllPosts($params, $posttype, $funcaoCustomizacao){
