@@ -33,7 +33,7 @@ function viewPadraoPost(){
         'thumbnail' => get_the_post_thumbnail_url(),
         'autor' => get_the_author(),
         'categorias' => get_the_category(),
-        'conteudo' => get_the_content(null, true)
+        'conteudo' =>  apply_filters('the_content', get_the_content())
     );
 }
 function ConstruiRetorno($dados, $paginaAtual, &$query, $qtdpPagina = 10){
