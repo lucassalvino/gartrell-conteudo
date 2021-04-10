@@ -23,6 +23,14 @@ function definicao_api(){
     CriaRota('reflexao', 'GetAllReflexao');
     CriaRota('reflexao', 'GetReflexao', true);
     CriaRota('geral', 'getgeralpost', true);
+    register_rest_route(
+		'v1',
+		'/resumofiquepordentro',
+		array(
+			'methods' => 'GET',
+			'callback' => 'GetResumoFiquePorDentro'
+		)
+	);
 }
 
 function viewPadraoPost(){
@@ -146,4 +154,24 @@ function GetAllReflexao($params){
 }
 function getgeralpost($params){
     return GetPostUnico($params, 'post_noticia', 'SemCustomizacao');
+}
+function GetResumoFiquePorDentro($params){
+    $retorno = Array();
+    $args = array(
+        'post_status'=>'publish',
+		'order' => 'DESC',
+        'post__in' => [74,80,82]
+	);
+    $query = new WP_Query($args);
+    if ($query->have_posts()){
+        while($query->have_posts()){
+			$query->the_post();
+			array_push($retorno, array(
+                'id' => get_the_ID(),
+                'titulo' => get_the_title(),
+                'resumo' => get_the_excerpt()
+                )
+            );
+		}
+    }
 }
