@@ -158,6 +158,7 @@ function getgeralpost($params){
 function GetResumoFiquePorDentro($params){
     $retorno = Array();
     $args = array(
+        'post_type' => 'any',
         'post_status'=>'publish',
 		'order' => 'DESC',
         'post__in' => [74,80,82]
