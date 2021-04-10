@@ -22,6 +22,7 @@ function definicao_api(){
     CriaRota('noticia', 'GetNoticia', true);
     CriaRota('reflexao', 'GetAllReflexao');
     CriaRota('reflexao', 'GetReflexao', true);
+    CriaRota('geral', 'getgeralpost', true);
 }
 
 function viewPadraoPost(){
@@ -142,4 +143,7 @@ function GetReflexao($params){
 
 function GetAllReflexao($params){
     return GetAllPosts($params, 'post_reflexoes', 'SemCustomizacao');
+}
+function getgeralpost($params){
+    return GetPostUnico($params, 'post_noticia', 'SemCustomizacao');
 }
