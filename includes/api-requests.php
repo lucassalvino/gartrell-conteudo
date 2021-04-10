@@ -174,4 +174,5 @@ function GetResumoFiquePorDentro($params){
             );
 		}
     }
+    return ObtemRetornoPadraoSucesso($retorno);
 }
