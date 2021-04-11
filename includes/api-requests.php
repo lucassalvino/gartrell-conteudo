@@ -29,6 +29,7 @@ function definicao_api(){
     CriaRota('equipe', 'GetEquipe');
     CriaRota('galeria', 'GetAllGaleria');
     CriaRota('galeria', 'GetGaleria', true);
+    CriaRota('identidadenominal', 'GetIdentidadeNominal');
 }
 
 function viewPadraoPost(){
@@ -119,7 +120,10 @@ function GetAllPosts($params, $posttype, $funcaoCustomizacao){
 
 function CustomizaAcontece(){
     return array(
-        'palestrantes' => get_field('palestrantes')
+        'palestrantes' => get_field('palestrantes'),
+        'data_evento' => get_field('data_evento'),
+        'banner' => get_field('banner'),
+        'mostrar_formulario' => get_field('mostrar_formulario')
     );
 }
 
@@ -296,5 +300,26 @@ function GetGaleria($params){
     });
     return ObtemRetornoPadraoSucesso(
         count($retorno) > 0 ? $retorno[0]:array()
+    );
+}
+
+function GetIdentidadeNominal($params){
+    $retorno = CustomCustomQuery(array(
+        'name' => 'identidade-nominal',
+        'post_type' => 'any',
+        'post_status'=>'publish',
+        'posts_per_page' => 1
+    ),
+    function(){
+        return array(
+            'id' => get_the_ID(),
+            'titulo' => get_the_title(),
+            'resumo' => get_the_excerpt(),
+            'thumbnail' => get_the_post_thumbnail_url(),
+            'conteudo' =>  apply_filters('the_content', get_the_content()),
+        );
+    });
+    return ObtemRetornoPadraoSucesso(
+        count($retorno) > 0?$retorno[0]:array()
     );
 }
