@@ -183,7 +183,11 @@ function GetQuemSomos($params){
                 'titulo' => get_the_title(),
                 'resumo' => get_the_excerpt(),
                 'thumbnail' => get_the_post_thumbnail_url(),
-                'conteudo' =>  apply_filters('the_content', get_the_content())
+                'conteudo' =>  apply_filters('the_content', get_the_content()),
+                'imagem_fundo' => get_field('imagem_fundo'),
+                'texto_visao' => get_field('texto_visao'),
+                'texto_missao' => get_field('texto_missao'),
+                'texto_valores' => get_field('texto_valores')
             );
         }
     );
