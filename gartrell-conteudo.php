@@ -93,4 +93,46 @@ function register_reflexoes_post(){
 	register_post_type( 'post_reflexoes', $args );
 }
 
+add_action( 'init', 'register_servicos_post' );
+
+function register_servicos_post(){
+	$labels = array(
+		'name' => __( 'Serviços', 'Posts Serviços' ),
+		'singular_name' => __( 'Serviço', 'Post Serviço' )
+	);
+	$args = array(
+		'labels' => $labels,
+		'description' => 'Posts Serviços',
+		'public' => true,
+		'menu_position' => 7,
+		'supports' => array(
+			'editor' , 'title', 'thumbnail', 'custom-fields'
+        ),
+        'rewrite'=>true
+	);
+	register_post_type( 'post_servicos', $args );
+}
+
+
+add_action( 'init', 'register_equipe_post' );
+
+function register_equipe_post(){
+	$labels = array(
+		'name' => __( 'Equipe', 'Posts Equipe' ),
+		'singular_name' => __( 'Membro da equipe', 'Membro equipe' ),
+		'add_new_item' => __('Adicionar novo membro', 'txtdomain'),
+		'new_item' => __('Novo membro', 'txtdomain'),
+	);
+	$args = array(
+		'labels' => $labels,
+		'description' => 'Post Membro',
+		'public' => true,
+		'menu_position' => 7,
+		'supports' => array(
+			'excerpt' , 'title', 'thumbnail', 'custom-fields'
+        ),
+        'rewrite'=>true
+	);
+	register_post_type( 'post_equipe', $args );
+}
 include APP_PLUGIN_DIR . 'includes/api-requests.php';

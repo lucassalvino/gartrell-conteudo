@@ -23,14 +23,10 @@ function definicao_api(){
     CriaRota('reflexao', 'GetAllReflexao');
     CriaRota('reflexao', 'GetReflexao', true);
     CriaRota('geral', 'getgeralpost', true);
-    register_rest_route(
-		'v1',
-		'/resumofiquepordentro',
-		array(
-			'methods' => 'GET',
-			'callback' => 'GetResumoFiquePorDentro'
-		)
-	);
+    CriaRota('resumofiquepordentro', 'GetResumoFiquePorDentro');
+    CriaRota('servico', 'GetAllServicos');
+    CriaRota('quemsomos', 'GetQuemSomos');
+    CriaRota('equipe', 'GetEquipe');
 }
 
 function viewPadraoPost(){
@@ -155,25 +151,106 @@ function GetAllReflexao($params){
 function getgeralpost($params){
     return GetPostUnico($params, 'post_noticia', 'SemCustomizacao');
 }
-function GetResumoFiquePorDentro($params){
+
+function CustomCustomQuery($args, $funcaoRetorno){
     $retorno = Array();
-    $args = array(
-        'post_type' => 'any',
-        'post_status'=>'publish',
-		'order' => 'DESC',
-        'post__in' => [74,80,82]
-	);
     $query = new WP_Query($args);
     if ($query->have_posts()){
         while($query->have_posts()){
 			$query->the_post();
-			array_push($retorno, array(
+            array_push($retorno, $funcaoRetorno());
+        }
+    }
+    return $retorno;
+}
+
+function GetQuemSomos($params){
+    $retorno = CustomCustomQuery(
+        array(
+            'name' => 'quem-somos',
+            'post_type' => 'any',
+            'post_status'=>'publish',
+            'posts_per_page' => 1
+        ),
+        function(){
+            return array(
                 'id' => get_the_ID(),
                 'titulo' => get_the_title(),
-                'resumo' => get_the_excerpt()
-                )
+                'resumo' => get_the_excerpt(),
+                'thumbnail' => get_the_post_thumbnail_url(),
+                'conteudo' =>  apply_filters('the_content', get_the_content())
             );
-		}
-    }
+        }
+    );
     return ObtemRetornoPadraoSucesso($retorno);
+}
+
+function GetResumoFiquePorDentro($params){
+    $retorno = CustomCustomQuery(array(
+            'post_type' => 'any',
+            'post_status'=>'publish',
+            'order' => 'DESC',
+            'post__in' => [74,80,82]
+        ), function(){
+        return array(
+            'id' => get_the_ID(),
+            'titulo' => get_the_title(),
+            'resumo' => get_the_excerpt()
+        );
+    });
+    return ObtemRetornoPadraoSucesso($retorno);
+}
+
+function GetAllServicos($params){
+    $retorno = CustomCustomQuery(array(
+        'post_type' => 'post_servicos',
+        'post_status'=>'publish'
+    ),function(){
+        return array(
+            'id' => get_the_ID(),
+            'nome' => get_the_title(),
+            'icone' => get_the_post_thumbnail_url(),
+            'descricao' => apply_filters('the_content', get_the_content())
+        );
+    });
+    return ObtemRetornoPadraoSucesso($retorno);
+}
+
+function GetEquipe($params){
+    $retorno = CustomCustomQuery(array(
+        'post_type' => 'post_equipe',
+        'post_status'=>'publish'
+    ), function(){
+        return array(
+            'id' => get_the_ID(),
+            'titulo' => get_the_title(),
+            'sobre' => get_the_excerpt(),
+            'fotografia' => get_the_post_thumbnail_url(),
+            'equipe' => get_field('equipe'),
+            'realiza_consulta' => get_field('realiza_consulta'),
+            'horario_de_atendimento' => get_field('horario_de_atendimento'),
+        );
+    });
+    $realizaConsulta = $params->get_param( 'realiza_consulta' );
+    $realizaConsulta = (!isset($realizaConsulta) || $realizaConsulta == "")? 'all' : ((int)$realizaConsulta) == 1;
+
+    $equipe = Array();
+    $parceiros = Array();
+    foreach($retorno as $item){
+        $arrayadd =&${(strcasecmp('equipe', $item['equipe']) == 0)? 'equipe' : 'parceiros'};
+        if(strcasecmp($realizaConsulta, 'all') == 0){
+            array_push( $arrayadd , $item);
+        }else{
+            if($realizaConsulta && $item['realiza_consulta']){
+                array_push( $arrayadd , $item);
+            }else{
+                if(!$realizaConsulta && !$item['realiza_consulta'])
+                    array_push( $arrayadd , $item);
+            }
+        }
+    }
+    return ObtemRetornoPadraoSucesso(array(
+        'equipe' => $equipe,
+        'parceiros' => $parceiros
+    ));
 }
