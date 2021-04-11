@@ -135,4 +135,26 @@ function register_equipe_post(){
 	);
 	register_post_type( 'post_equipe', $args );
 }
+
+add_action( 'init', 'register_galeria_post' );
+
+function register_galeria_post(){
+	$labels = array(
+		'name' => __( 'Galeria', 'Posts Galeria' ),
+		'singular_name' => __( 'Galeria', 'Galeria' ),
+		'add_new_item' => __('Adicionar nova galeria', 'txtdomain'),
+		'new_item' => __('Nova Galeria', 'txtdomain'),
+	);
+	$args = array(
+		'labels' => $labels,
+		'description' => 'Post de Galeria',
+		'public' => true,
+		'menu_position' => 7,
+		'supports' => array(
+			'title', 'thumbnail', 'custom-fields', 'excerpt'
+        ),
+        'rewrite'=>true
+	);
+	register_post_type( 'post_galeria', $args );
+}
 include APP_PLUGIN_DIR . 'includes/api-requests.php';

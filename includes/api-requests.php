@@ -27,6 +27,8 @@ function definicao_api(){
     CriaRota('servico', 'GetAllServicos');
     CriaRota('quemsomos', 'GetQuemSomos');
     CriaRota('equipe', 'GetEquipe');
+    CriaRota('galeria', 'GetAllGaleria');
+    CriaRota('galeria', 'GetGaleria', true);
 }
 
 function viewPadraoPost(){
@@ -152,7 +154,7 @@ function getgeralpost($params){
     return GetPostUnico($params, 'post_noticia', 'SemCustomizacao');
 }
 
-function CustomCustomQuery($args, $funcaoRetorno){
+function CustomCustomQuery($args, $funcaoRetorno, &$copiaquery = null){
     $retorno = Array();
     $query = new WP_Query($args);
     if ($query->have_posts()){
@@ -160,6 +162,9 @@ function CustomCustomQuery($args, $funcaoRetorno){
 			$query->the_post();
             array_push($retorno, $funcaoRetorno());
         }
+    }
+    if(!is_null($copiaquery)){
+        $copiaquery = $query;
     }
     return $retorno;
 }
@@ -182,6 +187,7 @@ function GetQuemSomos($params){
             );
         }
     );
+    $retorno = (count($retorno) > 0)? $retorno[0]:array();
     return ObtemRetornoPadraoSucesso($retorno);
 }
 
@@ -253,4 +259,38 @@ function GetEquipe($params){
         'equipe' => $equipe,
         'parceiros' => $parceiros
     ));
+}
+function GetViewGaleria(){
+    return array(
+        'id' => get_the_ID(),
+        'titulo' => get_the_title(),
+        'resumo' => get_the_excerpt(),
+        'thumbnail' => get_the_post_thumbnail_url(),
+        'local' => get_field('local'),
+        'imagens' => get_field('imagens')
+    );
+}
+function GetAllGaleria($params){
+    $query = true;
+    $paginaAtual = null;
+    $quantidadePagina = null;
+    GetParametrosPadrao($params, $paginaAtual, $quantidadePagina);
+    $args = GetAllArgumentosFiltro('post_galeria', $paginaAtual, $quantidadePagina);
+    $retorno = CustomCustomQuery($args, function(){
+        return GetViewGaleria();
+    }, $query);
+    $retorno = ConstruiRetorno($retorno, $paginaAtual, $query, $quantidadePagina);
+    return ObtemRetornoPadraoSucesso($retorno);
+}
+
+function GetGaleria($params){
+    $retorno = CustomCustomQuery(array(
+        'p' => $params->get_param('id'),
+        'post_type' => 'any'
+    ), function(){
+        return GetViewGaleria();
+    });
+    return ObtemRetornoPadraoSucesso(
+        count($retorno) > 0 ? $retorno[0]:array()
+    );
 }
