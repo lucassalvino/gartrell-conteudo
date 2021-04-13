@@ -268,6 +268,8 @@ function GetEquipe($params){
         return array(
             'id' => get_the_ID(),
             'titulo' => get_the_title(),
+            'cargo' => get_field('cargo'),
+            'sexo' => get_field('sexo'),
             'sobre' => get_the_excerpt(),
             'fotografia' => get_the_post_thumbnail_url(),
             'equipe' => get_field('equipe'),
