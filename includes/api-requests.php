@@ -272,7 +272,6 @@ function GetViewGaleria(){
     return array(
         'id' => get_the_ID(),
         'titulo_evento' => get_the_title(),
-        'resumo' => get_the_excerpt(),
         'thumbnail' => get_the_post_thumbnail_url(),
         'local' => get_field('local'),
         'imagens' => get_field('imagens'),

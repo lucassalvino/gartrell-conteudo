@@ -151,7 +151,7 @@ function register_galeria_post(){
 		'public' => true,
 		'menu_position' => 7,
 		'supports' => array(
-			'title', 'thumbnail', 'custom-fields', 'excerpt'
+			'title', 'thumbnail', 'custom-fields'
         ),
         'rewrite'=>true
 	);
