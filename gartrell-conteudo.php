@@ -106,7 +106,7 @@ function register_servicos_post(){
 		'public' => true,
 		'menu_position' => 7,
 		'supports' => array(
-			'editor' , 'title', 'thumbnail', 'custom-fields'
+			'editor' , 'title', 'custom-fields'
         ),
         'rewrite'=>true
 	);
@@ -156,5 +156,72 @@ function register_galeria_post(){
         'rewrite'=>true
 	);
 	register_post_type( 'post_galeria', $args );
+}
+
+
+add_action( 'init', 'register_saudeintegral_post' );
+
+function register_saudeintegral_post(){
+	$labels = array(
+		'name' => __( 'Posts Saúde Integral', 'Posts Saúde Integral' ),
+		'singular_name' => __( 'Posts Saúde Integral', 'Post Saúde Integral' ),
+		'add_new_item' => __('Adicionar Posts Saúde Integral', 'txtdomain'),
+		'new_item' => __('Novo Post Saúde Integral', 'txtdomain'),
+	);
+	$args = array(
+		'labels' => $labels,
+		'description' => 'Post Saúde Integral',
+		'public' => true,
+		'menu_position' => 8,
+		'supports' => array(
+			'editor', 'title', 'thumbnail', 'custom-fields', 'excerpt', 'author'
+        ),
+        'rewrite'=>true
+	);
+	register_post_type( 'post_saudeintegral', $args );
+}
+
+add_action( 'init', 'register_sociedade_post' );
+
+function register_sociedade_post(){
+	$labels = array(
+		'name' => __( 'Posts Sociedade', 'Posts Sociedade' ),
+		'singular_name' => __( 'Posts Sociedade', 'Post Sociedade' ),
+		'add_new_item' => __('Adicionar Posts Sociedade', 'txtdomain'),
+		'new_item' => __('Novo Post Sociedade', 'txtdomain'),
+	);
+	$args = array(
+		'labels' => $labels,
+		'description' => 'Post Sociedade',
+		'public' => true,
+		'menu_position' => 11,
+		'supports' => array(
+			'editor', 'title', 'thumbnail', 'custom-fields', 'excerpt', 'author'
+        ),
+        'rewrite'=>true
+	);
+	register_post_type( 'post_sociedade', $args );
+}
+
+add_action( 'init', 'register_desenpessoal_post' );
+
+function register_desenpessoal_post(){
+	$labels = array(
+		'name' => __( 'Posts Desenvolvimento Social', 'Posts Desenvolvimento Social' ),
+		'singular_name' => __( 'Posts Desenvolvimento Social', 'Post Desenvolvimento Social' ),
+		'add_new_item' => __('Adicionar Posts Desenvolvimento Social', 'txtdomain'),
+		'new_item' => __('Novo Post Desenvolvimento Social', 'txtdomain'),
+	);
+	$args = array(
+		'labels' => $labels,
+		'description' => 'Post Desenvolvimento Social',
+		'public' => true,
+		'menu_position' => 10,
+		'supports' => array(
+			'editor', 'title', 'thumbnail', 'custom-fields', 'excerpt', 'author'
+        ),
+        'rewrite'=>true
+	);
+	register_post_type( 'post_desenpessoal', $args );
 }
 include APP_PLUGIN_DIR . 'includes/api-requests.php';

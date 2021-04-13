@@ -30,6 +30,12 @@ function definicao_api(){
     CriaRota('galeria', 'GetAllGaleria');
     CriaRota('galeria', 'GetGaleria', true);
     CriaRota('identidadenominal', 'GetIdentidadeNominal');
+    CriaRota('postssaudeintegral', 'GetAllSaudeintegral');
+    CriaRota('postssaudeintegral', 'GetSaudeintegral', true);
+    CriaRota('postssociedade', 'GetAllSociedade');
+    CriaRota('postssociedade', 'GetSociedade', true);
+    CriaRota('postsdesenpessoal', 'GetAllDesenvolPessoal');
+    CriaRota('postsdesenpessoal', 'GetDesenvolPessoal', true);
 }
 
 function viewPadraoPost(){
@@ -131,6 +137,30 @@ function SemCustomizacao(){
     return Array();
 }
 
+function GetAllSaudeintegral($params){
+    return GetAllPosts($params, 'post_saudeintegral', 'SemCustomizacao');
+}
+
+function GetSaudeintegral($params){
+    return GetPostUnico($params, 'post_saudeintegral', 'SemCustomizacao');
+}
+
+function GetAllSociedade($params){
+    return GetAllPosts($params, 'post_sociedade', 'SemCustomizacao');
+}
+
+function GetSociedade($params){
+    return GetPostUnico($params, 'post_sociedade', 'SemCustomizacao');
+}
+
+function GetAllDesenvolPessoal($params){
+    return GetAllPosts($params, 'post_desenpessoal', 'SemCustomizacao');
+}
+
+function GetDesenvolPessoal($params){
+    return GetPostUnico($params, 'post_desenpessoal', 'SemCustomizacao');
+}
+
 function GetAcontece($params){
     return GetPostUnico($params, 'post_acontece', 'CustomizaAcontece');
 }
@@ -223,7 +253,7 @@ function GetAllServicos($params){
         return array(
             'id' => get_the_ID(),
             'nome' => get_the_title(),
-            'icone' => get_the_post_thumbnail_url(),
+            //'icone' => get_the_post_thumbnail_url(),
             'descricao' => apply_filters('the_content', get_the_content())
         );
     });
