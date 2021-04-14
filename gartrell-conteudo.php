@@ -207,14 +207,14 @@ add_action( 'init', 'register_desenpessoal_post' );
 
 function register_desenpessoal_post(){
 	$labels = array(
-		'name' => __( 'Posts Desenvolvimento Social', 'Posts Desenvolvimento Social' ),
-		'singular_name' => __( 'Posts Desenvolvimento Social', 'Post Desenvolvimento Social' ),
-		'add_new_item' => __('Adicionar Posts Desenvolvimento Social', 'txtdomain'),
-		'new_item' => __('Novo Post Desenvolvimento Social', 'txtdomain'),
+		'name' => __( 'Posts Desenvolvimento Humano', 'Posts Desenvolvimento Humano' ),
+		'singular_name' => __( 'Posts Desenvolvimento Humano', 'Post Desenvolvimento Humano' ),
+		'add_new_item' => __('Adicionar Posts Desenvolvimento Humano', 'txtdomain'),
+		'new_item' => __('Novo Post Desenvolvimento Humano', 'txtdomain'),
 	);
 	$args = array(
 		'labels' => $labels,
-		'description' => 'Post Desenvolvimento Social',
+		'description' => 'Post Desenvolvimento Humano',
 		'public' => true,
 		'menu_position' => 10,
 		'supports' => array(
