@@ -36,6 +36,8 @@ function definicao_api(){
     CriaRota('postssociedade', 'GetSociedade', true);
     CriaRota('postsdesenpessoal', 'GetAllDesenvolPessoal');
     CriaRota('postsdesenpessoal', 'GetDesenvolPessoal', true);
+    CriaRota('redessociais', 'GetRedesSociais');
+    CriaRota('seo', 'GetSEO');
 }
 
 function viewPadraoPost(){
@@ -358,4 +360,23 @@ function GetIdentidadeNominal($params){
     return ObtemRetornoPadraoSucesso(
         count($retorno) > 0?$retorno[0]:array()
     );
+}
+function GetRedesSociais($params){
+    return ObtemRetornoPadraoSucesso(array(
+        'facebook' => get_field('facebook', 'option'),
+        'instagram' => get_field('instagram', 'option'),
+        'twitter' => get_field('twitter', 'option'),
+        'linkdin'=> get_field('linkdin', 'option'),
+        'youtube'=> get_field('youtube', 'option'),
+        'numero_whatsapp' => get_field('numero_whatsapp', 'option')
+    ));
+}
+function GetSEO($params){
+    return ObtemRetornoPadraoSucesso(array(
+        'descricao' => get_bloginfo("description"),
+        'nomeSite' => get_bloginfo('name'),
+        'palavraschave' => get_field('palavras_chave','option'),
+        'imagemOpenGraphPadrao' => get_field('imagem_compartilhamento', 'option'),
+        'tracking' => get_field('script_tracking', 'option'),
+    ));
 }
