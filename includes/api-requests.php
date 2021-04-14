@@ -263,7 +263,8 @@ function GetAllServicos($params){
 function GetEquipe($params){
     $retorno = CustomCustomQuery(array(
         'post_type' => 'post_equipe',
-        'post_status'=>'publish'
+        'post_status'=>'publish',
+        'posts_per_page'=>-1
     ), function(){
         return array(
             'id' => get_the_ID(),
