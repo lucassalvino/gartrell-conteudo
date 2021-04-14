@@ -296,6 +296,9 @@ function GetEquipe($params){
             }
         }
     }
+    usort($parceiros, function($a, $b){
+        return strcasecmp($a["titulo"], $b["titulo"]);
+    });
     return ObtemRetornoPadraoSucesso(array(
         'equipe' => $equipe,
         'parceiros' => $parceiros
